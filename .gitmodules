@@ -1,0 +1,9 @@
+[submodule "ucos/uC-CPU"]
+	path = ucos/uC-CPU
+	url = https://github.com/manisimov/uC-CPU.git
+[submodule "ucos/uC-LIB"]
+	path = ucos/uC-LIB
+	url = https://github.com/weston-embedded/uC-LIB.git
+[submodule "ucos/uC-OS3"]
+	path = ucos/uC-OS3
+	url = https://github.com/weston-embedded/uC-OS3.git
