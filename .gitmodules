@@ -7,3 +7,6 @@
 [submodule "ucos/uC-OS3"]
 	path = ucos/uC-OS3
 	url = https://github.com/weston-embedded/uC-OS3.git
+[submodule "ucos/uC-USBD"]
+	path = ucos/uC-USBD
+	url = https://github.com/weston-embedded/uC-USBD.git

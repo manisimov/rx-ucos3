@@ -1,5 +1,7 @@
 cmake_minimum_required (VERSION 3.16)
 
+######### OS ###########
+
 add_library (ucos3
   #### uCOS-III CPU specific ####
   uC-OS3/Ports/Renesas/RX/GNURX/os_cpu_c.c
@@ -27,6 +29,7 @@ add_library (ucos3
   uC-CPU/cpu_core.c
 )
 
+set_target_properties (ucos3 PROPERTIES EXCLUDE_FROM_ALL TRUE)
 target_compile_options (ucos3 PRIVATE ${UCOS_COMPILE_FLAGS})
 
 target_include_directories (ucos3 PUBLIC
@@ -42,3 +45,66 @@ target_include_directories (ucos3 PUBLIC
   #### configuration ####
   ${UCOS_CONFIG_DIR}
 )
+
+######## uC-LIB ###############################
+
+add_library (uclib
+  uC-LIB/lib_ascii.c
+  uC-LIB/lib_math.c
+  uC-LIB/lib_mem.c
+  uC-LIB/lib_str.c
+)
+
+set_target_properties (uclib PROPERTIES EXCLUDE_FROM_ALL TRUE)
+target_compile_options (uclib PRIVATE ${UCOS_COMPILE_FLAGS})
+
+target_include_directories (uclib PUBLIC
+  uC-LIB
+  uC-OS3/Source
+  uC-CPU
+  uC-CPU/RX/GNURX
+  ${UCOS_CONFIG_DIR}
+)
+
+######### USB Device stack (uC-USBD) ###########
+
+add_library (ucusbd
+  uC-USBD/Source/usbd_core.c
+  uC-USBD/Source/usbd_ep.c
+  uC-USBD/OS/uCOS-III/usbd_os.c
+  uC-USBD/Drivers/RX600/usbd_drv_rx600.c
+  uC-USBD/Class/HID/usbd_hid.c
+  uC-USBD/Class/HID/usbd_hid_report.c
+  uC-USBD/Class/HID/OS/uCOS-III/usbd_hid_os.c
+### usb app example ###
+  #uC-USBD/App/Device/app_usbd.c
+  #uC-USBD/App/Device/app_usbd_hid.c
+)
+
+set_target_properties (ucusbd PROPERTIES EXCLUDE_FROM_ALL TRUE)
+target_compile_options (ucusbd PRIVATE ${UCOS_COMPILE_FLAGS})
+
+target_include_directories (ucusbd PUBLIC
+  #### CPU independent ####
+  uC-OS3/Source
+  uC-OS3
+  #### uC-CPU ####
+  uC-CPU
+  uC-CPU/RX/GNURX
+  #### uC-LIB ####
+  uC-LIB
+  #### uCOS-III CPU specific ####
+  uC-OS3/Ports/Renesas/RX/GNURX
+  #### configuration ####
+  ${UCOS_CONFIG_DIR}
+  ######
+  uC-USBD/Drivers/RX600
+  ######
+  uC-USBD/Class/HID
+  ######
+  uC-USBD/App/Device
+  uC-USBD
+  uC-USBD/Source
+)
+
+#add_library (ucusbd
