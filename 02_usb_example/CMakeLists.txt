@@ -20,7 +20,8 @@ add_executable (${PROJECT_NAME} src/main.c
                                 src/hw/hw.c
                                 src/hw/hw_os.c
                                 src/leds.c
-                                src/usb_device.c)
+                                src/usb_device.c
+                                src/buttons.c)
 
 target_include_directories (${PROJECT_NAME} PRIVATE src
                                                     src/device

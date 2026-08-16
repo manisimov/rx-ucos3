@@ -6,6 +6,7 @@
 #include "usb_device.h"
 #include <usbd_drv_rx600.h>
 #include <stddef.h>
+#include "buttons.h"
 
 #define  FIRST_TASK_STK_SIZE                      512u
 #define  FIRST_TASK_PRIO                            4u
@@ -118,6 +119,7 @@ static  void  FirstTask (void *p_arg) {
     USBD_ERR usb_err;
 
     leds_init();
+    buttons_init();
     leds_off(LEDS_LED10);
     leds_off(LEDS_LED12);
     hw_init();
@@ -190,8 +192,10 @@ static  void  FirstTask (void *p_arg) {
 
     while (1) {
         counter++;
-        leds_toggle(LEDS_LED8);
-        OSTimeDlyHMSM(0u, 0u, 0u, 100u,
+	if ((counter % 10) == 0)
+            leds_toggle(LEDS_LED8);
+	buttons_task();
+        OSTimeDlyHMSM(0u, 0u, 0u, 10u,
                       OS_OPT_TIME_HMSM_STRICT,
                       &err);
     }
@@ -306,13 +310,22 @@ static void  App_USBD_HID_MouseSetReport (CPU_INT08U  *p_buf)
 
     p_buf[0] = 0;
     p_buf[1] = 0;
+    p_buf[2] = 0;
+    p_buf[3] = 0;    
 
     CPU_CRITICAL_ENTER();
-    p_buf[2] = (App_USBD_HID_X > 0) ? 50 : -50;
-    p_buf[3] = (App_USBD_HID_Y > 0) ? 50 : -50;
+    if (buttons_is_pressed(BUTTON_LEFT)) {
+	p_buf[2] = -50;
+    }
 
-    App_USBD_HID_X = !App_USBD_HID_X;
-    App_USBD_HID_Y = !App_USBD_HID_Y;
+    if (buttons_is_pressed(BUTTON_RIGHT)) {
+	p_buf[2] = 50;
+    }
+
+    if (buttons_is_pressed(BUTTON_MIDDLE)) {
+	p_buf[3] = -50;
+    }
+
     CPU_CRITICAL_EXIT();
 }
 
