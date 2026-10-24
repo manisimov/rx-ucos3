@@ -94,7 +94,7 @@ void riic_init(void) {
     RIIC0.ICCR1.BIT.ICE = 1; // RIIC0 enabled
 }
 
-int riic_master_write(uint8_t addr, const uint8_t *data, size_t len) {
+static int master_write(uint8_t addr, const uint8_t *data, size_t len) {
     WAIT_WHILE(RIIC0.ICCR2.BIT.BBSY == 1); // bus is busy
 
     RIIC0.ICCR2.BIT.ST = 1; // start condition
@@ -130,7 +130,7 @@ int riic_master_write(uint8_t addr, const uint8_t *data, size_t len) {
     return res;
 }
 
-int riic_master_read(uint8_t addr, uint8_t *data, size_t len) {
+static int master_read(uint8_t addr, uint8_t *data, size_t len) {
     if (len == 0) {
         return 0;
     }
@@ -183,4 +183,24 @@ int riic_master_read(uint8_t addr, uint8_t *data, size_t len) {
     RIIC0.ICSR2.BIT.STOP = 0;
 
     return 0;
+}
+
+// On error peripheral and bus can be left in any state (busy bus, WAIT bit set,
+// slave holding SDA). Reinitialize everything, so next transfer can succeed.
+int riic_master_write(uint8_t addr, const uint8_t *data, size_t len) {
+    int res = master_write(addr, data, len);
+
+    if (res != 0) {
+        riic_init();
+    }
+    return res;
+}
+
+int riic_master_read(uint8_t addr, uint8_t *data, size_t len) {
+    int res = master_read(addr, data, len);
+
+    if (res != 0) {
+        riic_init();
+    }
+    return res;
 }

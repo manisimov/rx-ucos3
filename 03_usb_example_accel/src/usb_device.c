@@ -140,7 +140,9 @@ static  void  BSP_USBD_Template_Init (USBD_DRV  *p_drv)
     IOPORT.PFKUSB.BIT.USBMD = 0;    // setup function mode.
                                     //(function means usb device, as oposite to usb host)
     IR(USB0, USBI0) = 0;  // clear interrupt request
-    IPR(USB0, USBI0) = 6; // interrupt priority
+    // Interrupt priority must not be above CPU_CFG_KA_IPL_BOUNDARY (4):
+    // ISR calls OS services, OS critical sections mask only IPL <= 4.
+    IPR(USB0, USBI0) = 4;
     IEN(USB0, USBI0) = 1; // interrupt enable
 }
 

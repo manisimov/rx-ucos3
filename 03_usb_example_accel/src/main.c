@@ -326,6 +326,11 @@ static  struct accel_t  App_Accel_Zero;
 static  struct accel_t  App_Accel;
 static  CPU_BOOLEAN     App_Accel_Ok;
 
+volatile CPU_INT32U  dbg_mouse_loops;                           /* Debug counters, read them with debugger              */
+volatile CPU_INT32U  dbg_accel_errors;
+volatile CPU_INT32U  dbg_usb_errors;
+volatile USBD_ERR    dbg_usb_last_err;
+
 static CPU_INT08S  App_Accel_ToStep (CPU_INT32S  val)
 {
     if (val > ACCEL_DEAD_ZONE) {
@@ -373,6 +378,7 @@ static void  App_USBD_HID_MouseSetReport (CPU_INT08U  *p_buf)
     }
 
     if (accel_read(&App_Accel) != 0) {
+        dbg_accel_errors++;
         return;
     }
 
@@ -420,6 +426,11 @@ static  void  App_USBD_HID_MouseTask (void  *p_arg)
                            APP_USBD_HID_REPORT_LEN,
                            0u,
                           &err);
+        if (err != USBD_ERR_NONE) {
+            dbg_usb_errors++;
+            dbg_usb_last_err = err;
+        }
+        dbg_mouse_loops++;
 
         if ((++cnt % 25u) == 0u) {                              /* Debug output every 0.5 sec                           */
             uart_printf("x=%5d y=%5d z=%5d btn=%d dx=%4d dy=%4d\n",
