@@ -1,0 +1,1 @@
+This example is AI generated on the base of example 02
