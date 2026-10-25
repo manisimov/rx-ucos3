@@ -76,6 +76,7 @@ add_library (ucusbd
   uC-USBD/Class/HID/usbd_hid.c
   uC-USBD/Class/HID/usbd_hid_report.c
   uC-USBD/Class/HID/OS/uCOS-III/usbd_hid_os.c
+  uC-USBD/Class/Video/usbd_uvc.c
 ### usb app example ###
   #uC-USBD/App/Device/app_usbd.c
   #uC-USBD/App/Device/app_usbd_hid.c
@@ -101,6 +102,7 @@ target_include_directories (ucusbd PUBLIC
   uC-USBD/Drivers/RX600
   ######
   uC-USBD/Class/HID
+  uC-USBD/Class/Video
   ######
   uC-USBD/App/Device
   uC-USBD
