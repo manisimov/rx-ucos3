@@ -9,4 +9,4 @@
 	url = https://github.com/weston-embedded/uC-OS3.git
 [submodule "ucos/uC-USBD"]
 	path = ucos/uC-USBD
-	url = https://github.com/weston-embedded/uC-USBD.git
+	url = https://github.com/manisimov/uC-USBD.git
